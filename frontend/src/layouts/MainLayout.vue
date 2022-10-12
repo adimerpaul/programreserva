@@ -12,7 +12,7 @@
         />
 
         <q-toolbar-title>
-          Quasar App
+          Mi pagina de reserva
         </q-toolbar-title>
 
         <div>Quasar v{{ $q.version }}</div>

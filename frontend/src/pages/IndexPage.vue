@@ -1,17 +1,25 @@
 <template>
-  <q-page class="flex flex-center">
-    <img
-      alt="Quasar logo"
-      src="~assets/quasar-logo-vertical.svg"
-      style="width: 200px; height: 200px"
-    >
+  <q-page>
+    <pre>
+      {{reservas}}
+    </pre>
   </q-page>
 </template>
 
 <script>
-import { defineComponent } from 'vue'
-
-export default defineComponent({
-  name: 'IndexPage'
-})
+export default {
+  name: 'IndexPage',
+  data () {
+    return {
+      reservas:[]
+    }
+  },
+  methods: {
+  },
+  created() {
+    this.$api.get('http://localhost:8000/api/reserva').then((response) => {
+      this.reservas= response.data
+    })
+  }
+}
 </script>
