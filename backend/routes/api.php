@@ -19,3 +19,6 @@ use Illuminate\Support\Facades\Route;
 });*/
 
 Route::get('/user', [App\Http\Controllers\UserController::class, 'index']);
+
+Route::apiResource('/doctor', \App\Http\Controllers\DoctorController::class);
+Route::apiResource('/reserva', \App\Http\Controllers\ReservaController::class);
