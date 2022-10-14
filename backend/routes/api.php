@@ -22,3 +22,4 @@ Route::get('/user', [App\Http\Controllers\UserController::class, 'index']);
 
 Route::apiResource('/doctor', \App\Http\Controllers\DoctorController::class);
 Route::apiResource('/reserva', \App\Http\Controllers\ReservaController::class);
+Route::get('/fecha', [\App\Http\Controllers\ReservaController::class,'fechas']);

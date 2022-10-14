@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('reservas', function (Blueprint $table) {
             $table->id();
             $table->dateTime('fechaInicio');
-            $table->dateTime('fechaInicio');
+            $table->dateTime('fechaFin');
             $table->string('estado')->default(false);
             $table->string('cliente')->nullable();
             $table->string('celular')->nullable();
