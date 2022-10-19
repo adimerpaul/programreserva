@@ -58,9 +58,9 @@ export default {
   data () {
     return {
       reservas:[],
-      splitterModel: 40,
+      splitterModel: 50,
       date:  date.formatDate(new Date(),'YYYY/MM/DD'),
-      events: [ '2019/02/01', '2019/02/05', '2019/02/06' ]
+      events: []
     }
   },
   methods: {
