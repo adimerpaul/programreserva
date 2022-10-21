@@ -9,7 +9,7 @@ class DoctorController extends Controller
 {
     public function index()
     {
-        return Doctor::all();
+        return Doctor::orderBy('name')->get();
     }
     public function store(Request $request)
     {

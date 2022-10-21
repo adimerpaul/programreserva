@@ -11,22 +11,22 @@
     </template>
     <template v-slot:body-cell-opcion="props">
       <q-td :props="props">
-        <q-btn @click="doctorDelete(props.row)" color="red" icon="delete" />
+        <q-btn @click="doctorDelete(props.row)" color="red" icon="delete"  />
         <q-btn @click="doctorClick(props.row)" color="yellow" icon="edit" />
       </q-td>
     </template>
   </q-table>
   <q-dialog v-model="doctorDialog">
     <q-card>
-      <q-card-section>
-        <div class="text-h6">Agregar doctor</div>
+      <q-card-section class="q-pb-none">
+        <div class="text-h6 q-pa-none">Agregar doctor</div>
       </q-card-section>
       <q-card-section>
         <q-form @submit="doctorCreate">
-          <q-input outlined v-model="doctor.name" label="Nombre" />
+          <q-input outlined v-model="doctor.name" label="Nombre" style="text-transform: uppercase" required />
 <!--          <q-input outlined v-model="doctor.especialidad" label="Especialidad" />-->
-          <q-select outlined v-model="doctor.especialidad" :options="especialidades" label="Especialidad" />
-          <q-input outlined v-model="doctor.descripcion" label="Descripcion" />
+          <q-select outlined v-model="doctor.especialidad" :options="especialidades" required label="Especialidad" style="text-transform: uppercase"/>
+          <q-input outlined v-model="doctor.descripcion" label="Descripcion" style="text-transform: uppercase"/>
           <q-btn :loading="loading" type="submit" class="full-width" color="green" label="Guardar" icon="check" />
         </q-form>
       </q-card-section>
@@ -40,7 +40,7 @@ export default {
   name: `Doctor`,
   data(){
     return{
-      especialidades: ['Cardiologia','Neurologia','Oftalmologia','Otorrinolaringologia','Pediatría','Psiquiatría','Traumatología'],
+      especialidades: ['CARDIOLOGIA','NEUROLOGIA','OFTALMOLOGIA','OTORRONOLARINGOLOGIA','PEDIATRIA','PESIQUIATRIA','TRAUMATOLOGIA'],
       loading:false,
       doctorUpdate:false,
       doctorFilter: '',
@@ -49,7 +49,7 @@ export default {
       doctor:{},
       doctorColum:[
         {name:'opcion',label:'Opcion',field:'opcion',sortable:true},
-        {name:'id',label:'ID',field:'id',sortable:true},
+        // {name:'id',label:'ID',field:'id',sortable:true},
         {name:'name',label:'name',field:'name',sortable:true},
         {name:'descripcion',label:'descripcion',field:'descripcion',sortable:true},
         {name:'foto',label:'foto',field:'foto',sortable:true},
@@ -71,6 +71,8 @@ export default {
     doctorCreate(){
       this.loading=true
       this.$q.loading.show()
+      this.doctor.name=this.doctor.name.toUpperCase()
+      this.doctor.descripcion=this.doctor.descripcion==undefined?'':this.doctor.descripcion.toUpperCase()
       if (this.doctorUpdate){
         this.$api.put('doctor/'+this.doctor.id,this.doctor).then((res) => {
           this.doctorDialog=false;
