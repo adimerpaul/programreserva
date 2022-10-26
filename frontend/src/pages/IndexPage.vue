@@ -36,14 +36,14 @@
                   <div class="col-3 text-center text-grey">Status</div>
                   <div class="col-3 text-center text-grey">Opciones</div>
                 </div>
-                <div  v-for="(r,i) in reservas" :key="i" class="row bg-blue-1">
+                <div  v-for="(r,i) in reservas" :key="i" :class="r.estado?'row bg-red-1':'row bg-blue-1'">
                   <div class="col-1 text-center text-bold">{{i+1}}</div>
                   <div class="col-5 text-left ">
                     <div class="text-bold">{{r.doctor.name}}</div>
                     <div>{{r.fechaInicio.substring(11,16)}} - {{r.fechaFin.substring(11,16)}}</div>
                   </div>
                   <div class="col-3 text-center "> <q-checkbox disable v-model="r.estado" :label="r.estado?'OCUPADO':'LIBRE'"/></div>
-                  <div class="col-3 text-center text-grey flex flex-center">
+                  <div v-if="!r.estado" class="col-3 text-center text-grey flex flex-center">
                     <q-btn @click="reservarClick(r)" color="green" icon="event" rounded size="9px" no-caps label="Reservar"/>
                   </div>
                 </div>
@@ -111,9 +111,9 @@
             <q-input disable label="Especialidad" v-model="reserva.doctor.especialidad" dense outlined required/>
             <q-input disable label="Fecha inicio" v-model="reserva.fechaInicio" type="datetime-local" dense outlined/>
             <q-input disable label="Fecha fin" v-model="reserva.fechaFin" type="datetime-local" dense outlined/>
-            <q-input label="Nombre" v-model="reserva.nombre" type="text" dense outlined/>
-            <q-input label="Celular" v-model="reserva.celular" type="text" dense outlined/>
-            <q-btn :loading="loading" type="submit" class="full-width" color="yellow" icon-right="check" label="Crear reserva" no-caps />
+            <q-input label="Nombre" v-model="reserva.cliente" type="text" required dense outlined/>
+            <q-input label="Celular" v-model="reserva.celular" type="text" required dense outlined/>
+            <q-btn :loading="loading" type="submit" class="full-width" color="info" icon-right="check" label="Crear reserva" no-caps />
           </q-form>
         </q-card-section>
       </q-card>
@@ -125,6 +125,10 @@
 
 import {date} from "quasar";
 import moment from "moment";
+
+import { jsPDF } from "jspdf";
+
+
 export default {
   name: 'IndexPage',
   data () {
@@ -140,17 +144,34 @@ export default {
       splitterModel: 50,
       date:  date.formatDate(new Date(),'YYYY/MM/DD'),
       events: [],
-      doctors:[]
+      doctors:[],
+      fecha:'',
     }
   },
   methods: {
     reservaUpdate(){
-
+      this.$q.loading.show()
+      this.reserva.estado = true;
+      console.log(this.reserva)
+      this.$api.put('reserva/'+this.reserva.id,this.reserva).then(res=>{
+        this.reservaUpdateDialog = false
+        this.search(this.fecha)
+        const doc = new jsPDF();
+        doc.text("Nombre ", 10, 10);
+        doc.text(this.reserva.cliente, 50, 10);
+        doc.text("Doctor ", 10, 20);
+        doc.text(this.reserva.doctor.name, 50, 20);
+        doc.text("Horario ", 10, 30);
+        doc.text(this.reserva.fechaInicio, 50, 30);
+        doc.text("Especialista ", 10, 40);
+        doc.text(this.reserva.doctor.especialidad, 50, 40);
+        doc.save("reserva.pdf");
+      })
     },
     reservarClick(r){
       this.reservaUpdateDialog=true;
       this.reserva=r
-      console.log(r)
+      // console.log(r)
     },
     reservaCreate(){
       if(this.reserva.doctors==undefined){
@@ -190,6 +211,7 @@ export default {
       })
     },
     search(date){
+      this.fecha=date
       this.$q.loading.show()
       this.reservas=[]
       this.$api.get('reserva/'+moment(date,"YYYY/MM/DD").format("YYYY-MM-DD")).then((response) => {
