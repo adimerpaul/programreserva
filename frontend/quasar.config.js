@@ -79,7 +79,7 @@ module.exports = configure(function (ctx) {
       },
       env: {
         API: ctx.dev
-          ? 'http://localhost:8000/api/'
+          ? 'http://192.168.1.2:8000/api/'
           : 'http://137.184.68.239/api/'
       }
 
